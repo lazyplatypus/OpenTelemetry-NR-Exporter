@@ -1,0 +1,26 @@
+extensions:
+  health_check: {}
+receivers:
+  otlp:
+    protocols:
+      grpc:
+  zipkin:
+    endpoint: 0.0.0.0:9411
+exporters:
+  logging:
+    logLevel: $LOG_EXPORTER_LOG_LEVEL
+  newrelic:
+    apikey: $NEW_RELIC_API_KEY
+service:
+  extensions: [health_check]
+  pipelines:
+    metrics:
+      receivers: [otlp]
+      exporters: [logging, newrelic]
+    traces:
+      receivers: [otlp,zipkin]
+      exporters: [logging, newrelic]
+    # TODO: add log exporter once available
+    # logs:
+    #   receivers: [otlp]
+    #   exporters: [logging, newrelic]
